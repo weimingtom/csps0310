@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="csps-api">
+    <output-path>$PROJECT_DIR$/out/artifacts/csps_api</output-path>
+    <root id="root" />
+  </artifact>
+</component>

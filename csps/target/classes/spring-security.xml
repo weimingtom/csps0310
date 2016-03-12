@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <http pattern="/preLogin" security="none"/>
+    <http pattern="/timeout" security="none"/>
+
+    <http access-denied-page="/common/403.jsp">
+
+        <form-login login-page="/preLogin"
+                    login-processing-url="/login"
+                    authentication-failure-url="/preLogin?error=true" />
+                    <!--default-target-url="/sys/user/preEdit" />-->
+
+        <logout logout-success-url="/preLogin" logout-url="/logout"/>
+        <!--<session-management invalid-session-url="/timeout"/>-->
+        <http-basic/>
+        <custom-filter ref="edotFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+    </http>
+
+    <beans:bean id="edotFilter" class="com.edot.support.security.EdotFilterSecurityInterceptor">
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <beans:property name="accessDecisionManager" ref="edotAccessDecisionManager" />
+        <beans:property name="securityMetadataSource" ref="edotSecurityMetadataSource" />
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="cspsAuthenticationProvider" />
+    </authentication-manager>
+    
+    <beans:bean id="cspsAuthenticationProvider" class="com.edot.support.security.CspsAuthenticationProvider">
+    	<beans:property name="cspsUserDetailsService" ref="cspsUserDetailsService" />
+    </beans:bean>
+
+    <beans:bean id="cspsUserDetailsService" class="com.edot.support.security.CspsUserDetailsService"/>
+	<!-- <beans:bean id="autoPasswordEncoder" class="com.edot.support.security.AutoPasswordEncoder" /> -->
+    <!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+    <beans:bean id="edotAccessDecisionManager" class="com.edot.support.security.EdotAccessDecisionManager" />
+
+    <!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 -->
+    <beans:bean id="edotSecurityMetadataSource" class="com.edot.support.security.EdotInvocationSecurityMetadataSource" >
+    </beans:bean>
+
+</beans:beans>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:property-placeholder location="classpath:*.properties" file-encoding="utf-8" />
+
+    <!--启动自动扫描该包下所有的Bean(例如@Controller) -->
+    <context:component-scan base-package="com.edot.controller"/>
+
+    <aop:aspectj-autoproxy/>
+
+    <mvc:annotation-driven />
+        
+    <mvc:resources location="/images/" mapping="/images/**"/>
+    <mvc:resources location="/js/" mapping="/js/**"/>
+    <mvc:resources location="/css/" mapping="/css/**"/>
+
+    <!-- 定义视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="utf-8" />
+        <property name="useCodeAsDefaultMessage" value="true" />
+        <property name="cacheSeconds" value="10" />
+        <property name="basenames">
+            <list>
+                <value>classpath:error</value>
+                <!--<value>classpath:message</value >-->
+            </list>
+        </property>
+    </bean>
+
+    <bean id="httpApiClient" class="cn.wltg.http.HttpApiClient" />
+
+</beans>
